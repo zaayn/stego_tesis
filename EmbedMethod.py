@@ -80,11 +80,29 @@ def payload_process(segmented_bit ,segmented_payload, unique_bit):
             if(segmented_bit[x] == unique_bit[y]):
                 new_data[y] += int(segmented_payload[x],2)
                 break
+    
+    flag = True
+    number = 0
+    while flag == True:
+        mod, divided, new_data = get_mod_divided(new_data, average_bit)
+        flag = check_selisih(new_data, average_bit)
+        number += 1
+        print(number)
+        
+    return mod, divided
 
+def check_selisih(selisih, average_bit):
+    for x in selisih:
+        if(x>average_bit):
+            return True
+    return False
+
+def get_mod_divided(new_data, average_bit):
     divided = [math.floor(new_data[x]/average_bit) for x in range(len(new_data))]
     mod = [int(new_data[x]%average_bit) for x in range(len(new_data))]
+    selisih = [mod[x]+ divided[x] for x in range(len(mod))]
 
-    return mod, divided
+    return mod, divided, selisih
 
 def embedding(processed_payload, index_bit, interpolated_sample, divided, last_index):
     new_data = copy.copy(interpolated_sample)
