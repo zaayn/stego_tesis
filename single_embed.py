@@ -21,7 +21,6 @@ stego_audio = 'stego_audio/stego_audio'+audio+'_payload'+payload+'/stegoaudio.wa
 #payload process
 binary_payload = read_payload(payload_file)
 segmented_bit ,segmented_payload = segmentation_payload(binary_payload)
-# print(segmented_payload)
 
 #audio process
 freame_rate, original_sample = sampling(audio_file)

@@ -73,9 +73,6 @@ def get_unique_bit(bit):
 
 def payload_process(segmented_bit ,segmented_payload, unique_bit):
     average_bit = np.mean(unique_bit)
-    median_bit = np.median(unique_bit)
-    print(average_bit, median_bit)
-    value = average_bit + median_bit + (average_bit/2)
     new_data = [0 for x in range(len(unique_bit))] #init array of selisih
     
     for x in range(len(segmented_bit)):
@@ -84,8 +81,8 @@ def payload_process(segmented_bit ,segmented_payload, unique_bit):
                 new_data[y] += int(segmented_payload[x],2)
                 break
 
-    divided = [math.floor(new_data[x]/value) for x in range(len(new_data))]
-    mod = [int(new_data[x]%value) for x in range(len(new_data))]
+    divided = [math.floor(new_data[x]/average_bit) for x in range(len(new_data))]
+    mod = [int(new_data[x]%average_bit) for x in range(len(new_data))]
 
     return mod, divided
 
