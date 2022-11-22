@@ -62,22 +62,44 @@ def fuzzifikasi(interpolated_sample, original_sample):
 
     return bit
 
-def payload_process(segmented_bit ,segmented_payload, bit, interpolated_sample):
-    data_sample = []
-    index_sample = []
-    new_data = copy.copy(interpolated_sample)
-    for x in range(len(segmented_bit)):
-        for y in range (len(bit)):
-            if(segmented_bit[x] == bit[y]):
-                new_data[y] += int(segmented_payload[x],2)
-                
-                #cek index sample dan ruang sample
-                if(bit[y] not in data_sample):
-                    data_sample.append(bit[y])
-                    index_sample.append(y)
+def get_unique_bit(bit): 
+    unique_bit = []
+    index = []
+    for x in range(len(bit)):
+        if bit[x] not in unique_bit:
+            unique_bit.append(bit[x])
+            index.append(x)
+    return unique_bit, index
 
+def payload_process(segmented_bit ,segmented_payload, unique_bit):
+    average_bit = np.mean(unique_bit)
+    median_bit = np.median(unique_bit)
+    print(average_bit, median_bit)
+    value = average_bit + median_bit + (average_bit/2)
+    new_data = [0 for x in range(len(unique_bit))] #init array of selisih
+    
+    for x in range(len(segmented_bit)):
+        for y in range (len(unique_bit)):
+            if(segmented_bit[x] == unique_bit[y]):
+                new_data[y] += int(segmented_payload[x],2)
                 break
-    # print(data_sample, index_sample)
+
+    divided = [math.floor(new_data[x]/value) for x in range(len(new_data))]
+    mod = [int(new_data[x]%value) for x in range(len(new_data))]
+
+    return mod, divided
+
+def embedding(processed_payload, index_bit, interpolated_sample, divided, last_index):
+    new_data = copy.copy(interpolated_sample)
+    index_divided = 0
+    for x in range(len(interpolated_sample)):
+        for y in range(len(index_bit)):
+            if(x == index_bit[y]):
+                new_data[x] += processed_payload[y]
+        
+        if(x > last_index and x < last_index+len(divided)):
+            new_data[x] += divided[index_divided]
+            index_divided+=1
     return new_data
 
 def combine(input_sampling, embed_data, data_interpolation):
