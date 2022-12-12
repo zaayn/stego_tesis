@@ -1,16 +1,16 @@
-from EmbedMethod import read_payload
-from EmbedMethod import segmentation_payload
+from Methods import read_payload
+from Methods import segmentation_payload
 
-from EmbedMethod import sampling
-from EmbedMethod import interpolation_linear
-from EmbedMethod import fuzzifikasi
+from Methods import sampling
+from Methods import interpolation_linear
+from Methods import fuzzifikasi
 
-from EmbedMethod import get_unique_bit
-from EmbedMethod import payload_process
-from EmbedMethod import embedding
+from Methods import get_unique_bit
+from Methods import payload_process
+from Methods import embedding
 
-from EmbedMethod import combine
-from EmbedMethod import create_stego_audio
+from Methods import combine
+from Methods import create_stego_audio
 
 audio = '1'
 payload = '1'
@@ -29,8 +29,8 @@ bit = fuzzifikasi(interpolated_sample, original_sample)
 
 #embedding process
 unique_bit, index_bit = get_unique_bit(bit)
-processed_payload, divided = payload_process(segmented_bit, segmented_payload, unique_bit)
-embedded = embedding(processed_payload, index_bit, interpolated_sample, divided, index_bit[-1])
+processed_payload, divided, smooth = payload_process(segmented_bit, segmented_payload, unique_bit)
+embedded = embedding(processed_payload, index_bit, interpolated_sample, divided, index_bit[-1], smooth)
 
 #create output
 stego_data = combine(original_sample, embedded, interpolated_sample)
