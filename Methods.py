@@ -73,25 +73,24 @@ def get_unique_bit(bit):
             index.append(x)
     return unique_bit, index
 
-def payload_process(segmented_bit ,segmented_payload, unique_bit):
-    average_bit = np.mean(unique_bit)
-    new_data = [0 for x in range(len(unique_bit))] #init array of selisih
-
-    
+def payload_process(segmented_bit ,segmented_payload, bit, interpolated_sample):
+    embedded_sample = interpolated_sample.copy()
+    idx = 0
+    times = 0
     for x in range(len(segmented_bit)):
-        for y in range (len(unique_bit)):
-            if(segmented_bit[x] == unique_bit[y]):
-
-                new_data[y] += int(segmented_payload[x],2)
+        for y in range (len(bit)):
+            if(segmented_bit[x] == bit[y] and y > idx):
+                # print(x, y)
+                embedded_sample[y] += int(segmented_payload[x],2)
+                idx = y
+                if(y==len(bit)-1 and x < len(segmented_bit)-1):
+                    idx = 0
+                    times += 1
+                    print(times)
                 break
     
-
-    mod, divided = get_mod_divided(new_data, average_bit)
-
-    mod2, divided2 = get_mod_divided(divided, average_bit)
-    mod2 = np.append(mod2, divided2)
-
-    return mod, mod2
+    print(times)
+    return embedded_sample
 
 def get_mod_divided(new_data, average_bit):
     divided = [math.floor(new_data[x]/average_bit) for x in range(len(new_data))]

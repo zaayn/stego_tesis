@@ -1,2 +1,3 @@
 main : embeding dengan smoothing. hasil maksimal tapi gabisa di extract
 main2 : using 2 array modulus
+main3 : penyisian berdasarkan potongan ruang sample

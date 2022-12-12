@@ -13,7 +13,7 @@ from Methods import combine
 from Methods import create_stego_audio
 
 audio = '1'
-payload = '1'
+payload = '11'
 audio_file = 'dataset/Audio/data'+audio+'_mono.wav'
 payload_file = 'dataset/Payload/payload'+payload+'.txt'
 stego_audio = 'stego_audio/stego_audio'+audio+'_payload'+payload+'/stegoaudio.wav'
@@ -28,9 +28,13 @@ interpolated_sample = interpolation_linear(original_sample)
 bit = fuzzifikasi(interpolated_sample, original_sample)
 
 #embedding process
-unique_bit, index_bit = get_unique_bit(bit)
-processed_payload, processed_payload2 = payload_process(segmented_bit, segmented_payload, unique_bit)
-embedded = embedding(processed_payload, processed_payload2, index_bit, interpolated_sample, index_bit[-1])
+embedded = payload_process(segmented_bit, segmented_payload, bit, interpolated_sample)
+
+selisih = []
+for x in range (len(interpolated_sample)):
+    selisih.append(int(embedded[x]-interpolated_sample[x]))
+print(max(selisih))
+
 
 #create output
 stego_data = combine(original_sample, embedded, interpolated_sample)

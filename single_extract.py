@@ -27,5 +27,6 @@ def main():
     unique_bit, index_bit = get_unique_bit(bit)
     differenced, differenced2 = differencing(index_bit, interpolated_sample, embedded_sample)
     processed_payload = extracting(differenced, differenced2, unique_bit)
+    
 
 main()
