@@ -29,8 +29,8 @@ bit = fuzzifikasi(interpolated_sample, original_sample)
 
 #embedding process
 unique_bit, index_bit = get_unique_bit(bit)
-processed_payload, divided, smooth = payload_process(segmented_bit, segmented_payload, unique_bit)
-embedded = embedding(processed_payload, index_bit, interpolated_sample, divided, index_bit[-1], smooth)
+processed_payload, processed_payload2 = payload_process(segmented_bit, segmented_payload, unique_bit)
+embedded = embedding(processed_payload, processed_payload2, index_bit, interpolated_sample, index_bit[-1])
 
 #create output
 stego_data = combine(original_sample, embedded, interpolated_sample)

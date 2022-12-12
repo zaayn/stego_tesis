@@ -1,0 +1,2 @@
+main : embeding dengan smoothing. hasil maksimal tapi gabisa di extract
+main2 : using 2 array modulus

@@ -5,12 +5,7 @@ from Methods import fuzzifikasi
 
 from Methods import get_unique_bit
 from Methods import differencing
-
-# from Methods import combine
-# from Methods import process_bit
-# from Methods import create_payload
-# from Methods import create_cover_audio
-
+from Methods import extracting
 
 def main():
     audio = '1'
@@ -30,13 +25,7 @@ def main():
 
     # extracting process
     unique_bit, index_bit = get_unique_bit(bit)
-    differenced = differencing(unique_bit, index_bit, interpolated_sample, embedded_sample)
-
-    # payload_desimal = selisih(embedded_sample,interpolated_sample)
-
-    # processed_bit = process_bit(payload_desimal, bit, interpolated_sample)
-
-    # create_payload(processed_bit, extracted_payload)
-    # create_cover_audio(original_sample, extracted_audio)
+    differenced, differenced2 = differencing(index_bit, interpolated_sample, embedded_sample)
+    processed_payload = extracting(differenced, differenced2, unique_bit)
 
 main()

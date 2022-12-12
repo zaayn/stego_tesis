@@ -71,43 +71,36 @@ def get_unique_bit(bit):
         if bit[x] not in unique_bit:
             unique_bit.append(bit[x])
             index.append(x)
-    print(unique_bit, index)
     return unique_bit, index
 
 def payload_process(segmented_bit ,segmented_payload, unique_bit):
     average_bit = np.mean(unique_bit)
     new_data = [0 for x in range(len(unique_bit))] #init array of selisih
+
     
     for x in range(len(segmented_bit)):
         for y in range (len(unique_bit)):
             if(segmented_bit[x] == unique_bit[y]):
+
                 new_data[y] += int(segmented_payload[x],2)
                 break
     
-    flag = True
-    number = 0
-    while flag == True:
-        print(new_data)
-        mod, divided, new_data = get_mod_divided(new_data, average_bit)
-        flag = check_selisih(new_data, average_bit)
-        number += 1
-        print(new_data)
-    return mod, divided, number
 
-def check_selisih(selisih, average_bit):
-    for x in selisih:
-        if(x>average_bit):
-            return True
-    return False
+    mod, divided = get_mod_divided(new_data, average_bit)
+
+    mod2, divided2 = get_mod_divided(divided, average_bit)
+    mod2 = np.append(mod2, divided2)
+
+    return mod, mod2
 
 def get_mod_divided(new_data, average_bit):
     divided = [math.floor(new_data[x]/average_bit) for x in range(len(new_data))]
     mod = [int(new_data[x]%average_bit) for x in range(len(new_data))]
-    selisih = [mod[x]+ divided[x] for x in range(len(mod))]
+    # selisih = [mod[x]+ divided[x] for x in range(len(mod))]
 
-    return mod, divided, selisih
+    return mod, divided
 
-def embedding(processed_payload, index_bit, interpolated_sample, divided, last_index, smooth):
+def embedding(processed_payload, divided, index_bit, interpolated_sample, last_index):
     new_data = copy.copy(interpolated_sample)
     index_divided = 0
     for x in range(len(interpolated_sample)):
@@ -118,8 +111,6 @@ def embedding(processed_payload, index_bit, interpolated_sample, divided, last_i
         if(x > last_index and x < last_index+len(divided)):
             new_data[x] += divided[index_divided]
             index_divided+=1
-        if(x == len(interpolated_sample)-1):
-            new_data[x]+=smooth
     return new_data
 
 def combine(input_sampling, embed_data, data_interpolation):
@@ -154,32 +145,33 @@ def divide_stego_sample(data):
     stego_audio_data = [data[x] for x in range (len(data)) if x % 2 == 1]
     return cover_audio_data, stego_audio_data
 
-def differencing(unique_bit, index_bit, interpolated_sample, embedded_sample):
-    average_bit = int(np.mean(unique_bit))
-    times = 0 # menunjukkkan berapa kali process smoothing
-
-    divide = [] #berisi hasil pembagian yg dibulatkan kebawah
-    mod_difference = [] # berisi mod
+def differencing(index_bit, interpolated_sample, embedded_sample):
+    mod = []
+    mod2 = []
     for x in range(len(interpolated_sample)):
-        for y in range(len(unique_bit)):
+        for y in range(len(index_bit)):
             if( x == index_bit[y]):
-                mod_difference.append(int(embedded_sample[x] - interpolated_sample[x]))
+                mod.append(int(embedded_sample[x] - interpolated_sample[x]))
                 break
-        if(x > index_bit[-1] and x < index_bit[-1] + len(index_bit)+1):
-            divide.append(int(embedded_sample[x]-interpolated_sample[x]))
-        if(x == len(interpolated_sample)-1):
-            times = int(embedded_sample[x]-interpolated_sample[x])
+        if(x > index_bit[-1] and x < index_bit[-1] + (len(index_bit)*2)+1):
+            mod2.append(int(embedded_sample[x]-interpolated_sample[x]))
+       
+    return mod, mod2
 
-    # menghitung first smoothing yang telah diketahui
-    selisih = [(divide[x] * average_bit) + mod_difference[x] for x in range(len(divide))]
+def extracting(data1, data2, unique_bit):
+    average_bit = np.mean(unique_bit)
 
-    # menghitung selisih tanpa mengetahui mod dan divide nya
-    data = []
-    for x in range(len(selisih)):
-        tmp = selisih[x] * average_bit
-        dif_prob = []
-        while tmp > 0:
-            if(tmp%average_bit < selisih[x]):
-                dif_prob.append(object)
+    # first split data2 menjadi 2 array (mod2 and divided2)
+    half = len(data2)//2
+    mod2 = data2[:half]
+    divided2 = data2[half:]
+    
+    #find data divided for data 1
+    new_divided = [int(divided2[x]*average_bit)+ mod2[x] for x in range(half)]
+
+    #get payload
+    decimal_payload = [int(new_divided[x]*average_bit) + data1[x] for x in range(half)]
+    
+    return decimal_payload
 
 
